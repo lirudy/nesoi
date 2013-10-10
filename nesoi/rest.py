@@ -95,6 +95,7 @@ class Router(Resource):
             if m is not None:
                 return controller, controllerUrl.click(p), m.groupdict()
         print "no matching controller", p
+        return None
 
     def ebControl(self, reason, request):
         reason.printTraceback()
@@ -140,7 +141,11 @@ class Router(Resource):
         """
         Render request.
         """
-        controller, url, params = self.getController(request)
+        print request
+        res = self.getController(request)
+        controller = None
+        if res != None:
+            (controller, url, params) = res
         if controller is None:
             request.setResponseCode(http.INTERNAL_SERVER_ERROR)
             return 'No controller found for URL'

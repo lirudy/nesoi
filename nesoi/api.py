@@ -185,3 +185,33 @@ class ServiceCollectionResource(object):
             services[srvname] = {
                 'hosts': list(self.model.hosts(srvname))}
         return services
+
+
+class NodeResource(object):
+
+    def __init__(self, model, cluster_node):
+        self.model = model
+        self.cluster_node = cluster_node
+        
+    def get(self, router, request, url):
+        
+        val = {}
+        nodelist = {}
+        gossiper = self.cluster_node.gossiper
+        val["local_node"] = gossiper.name
+        
+        val["leader_node"] = gossiper.get("leader:leader")
+        for (ip,node) in gossiper._states.items():
+            print(node)
+            nodelist[ip] = node.alive
+            if val["leader_node"] == ip and node.alive == False and val["local_node"] != ip:
+                val["leader_node"] = None
+               
+        val["node_list"] = nodelist
+        
+        return val
+        
+        
+        
+        
+        

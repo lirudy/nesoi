@@ -55,6 +55,7 @@ def create_service(reactor, options):
     router.addController('srv/{srvname}/web-hooks', api.WebhookCollectionResource(model, 'srvname', 'service'))
     router.addController('srv/{srvname}/web-hooks/{hookname}', api.WebhookResource(model, 'srvname', 'service'))
     router.addController('srv/{srvname}/{hostname}', api.ServiceHostResource(model))
+    router.addController('nodestatus', api.NodeResource(model, cluster_node))
 
     service.addService(TCPServer(int(options['listen-port']), Site(router),
         interface=listen_address))
